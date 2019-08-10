@@ -13,21 +13,28 @@ import * as $ from 'jquery';
 export class DynamicPaymentFormComponent implements OnInit {
   form: FormGroup;
   form1: FormGroup;
+   errorMsg = new Map();
+
     personalSectionFields: any[] = [];
    beneficiarySectionFields: any[]= [];
 
     title: string;
+    errorMsgArr: any[]= [];
   constructor(private fb: FormBuilder) {}
 
   logToConsole(object: any) {
     console.log(object);
   }
-
+ 
   ngOnInit() {
+    //var m = str.match(/^\d{0,2}(?:\.\d{0,2}){0,1}$/);
+  
+//Set entries
+ 
     console.log("title:",this.title);
     this.form = this.fb.group({
       paymentInfo_details: this.fb.group({
-        name: "",
+        name:  ['', [Validators.maxLength(10),Validators.pattern(/^[1-9]\d*((\.\d{0,5})?)$/)]],
         founder: ""
       }),
       paymentInfoWithbeneficiariesList: this.fb.array([this.addPaymentInfoWithBeneficiary()])
@@ -35,6 +42,25 @@ export class DynamicPaymentFormComponent implements OnInit {
     (this.form.get("paymentInfoWithbeneficiariesList") as FormArray).removeAt(0);
   }
 
+
+  
+  validate(){
+    console.log('validate');
+   // (<FormGroup>this.form.controls['paymentInfo_details']).controls['name'].setValue("Test");
+    (<FormGroup>this.form.controls['paymentInfo_details']).controls['name'].setValidators([ Validators.maxLength(10), Validators.minLength(6)]); 
+    (<FormGroup>this.form.controls['paymentInfo_details']).controls['name'].updateValueAndValidity;
+console.log('Errors',(<FormGroup>this.form.controls['paymentInfo_details']).controls['name'].errors);
+(<FormGroup>this.form.controls['paymentInfo_details']).controls['name'].markAsTouched();
+    //console.log('userIndex', userIndex, '-------', 'index', index);
+    //(<FormArray>(<FormGroup>(<FormArray>this.form.controls['user'])
+    //    .controls[userIndex]).controls['phones']).removeAt(index);
+this.errorMsg.set("msg1", "Error Msg1");
+this.errorMsg.set("0lastname", "Error Msg0");
+this.errorMsg.set("msg3", "Error Msg3");
+this.errorMsg.set("firstname", "Error Msg4");
+this.errorMsg.set("16lastname", "Error Msg6");
+
+  }
    addPaymentInfoWithBeneficiary(): FormGroup {
 
  //alert("dyna 1");
@@ -116,6 +142,7 @@ for (let f of this.personalSectionFields) {
     this.addDynamic();
     (this.form.get("paymentInfoWithbeneficiariesList") as FormArray).push(this.addPaymentInfoWithBeneficiary());
   }
+
 
   deletePayment(index) {
     (this.form.get("paymentInfoWithbeneficiariesList") as FormArray).removeAt(index);

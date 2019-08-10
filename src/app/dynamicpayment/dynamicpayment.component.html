@@ -1,15 +1,22 @@
  
-<form [formGroup]="form">
+<form [formGroup]="form"  (ngSubmit)="validate()">
 
-  <div class="form-group row" style="display:none" formGroupName="paymentInfo_details">
-    <label>League Name <input formControlName="name"/></label>
-    <label>Founder <input formControlName="founder"/></label>
-    <button type="button" (click)="addPayment()">Add Payment</button>
-  </div>
+
   <div class="container">
       <div class="panel panel-primary">
           <div class="panel-heading">CREATE PAYMENT</div>
-  
+    <div class="form-group row" formGroupName="paymentInfo_details">
+      {{form.get
+        ('paymentInfo_details').get('name').errors}}--{{form.controls['paymentInfo_details'].controls['name'].required}}
+   <div class="form-group" >
+      <label>League Name <input formControlName="name"/></label>
+    <span  class="alert alert-danger" *ngIf="form.controls['paymentInfo_details'].controls['name'].value=='' || form.controls['paymentInfo_details'].controls['name'].invalid">
+      Name is required.
+    </span>
+  </div>
+    <label>Founder <input formControlName="founder"/></label>
+    <button type="button" (click)="addPayment()">Add Payment</button>
+  </div>
     <label>Bank Template Type</label>
      
       <select class="col" name="bankTemplateType">
@@ -27,6 +34,7 @@
             
           </select>
     <button class="button-primary"  type="button" (click)="addPayment()">Add Payment</button>
+  
   
 </div>
 </div>
@@ -67,6 +75,12 @@
                         <label>{{field.label}}</label> 
                           <input class="form-control"  type="text" class="form-control"  [id]="field.name" [name]="field.name" 
                               [formControlName]="field.name"> 
+                              <span  class="alert alert-danger" *ngIf="personal.controls[field.name].value==''">
+                                {{field.name}} is required.
+                              </span>
+                              <span  class="alert alert-danger" *ngIf="errorMsg.get(field.name)">
+                                {{errorMsg.get(field.name)}}
+                              </span>
                      </div>
                      <div   *ngSwitchCase="'radio'" >
                         <label>{{field.label}}</label> 
@@ -129,6 +143,13 @@
                       <label>{{field.label}}</label> 
                         <input class="form-control"  type="text" class="form-control"  [id]="field.name" [name]="field.name" 
                             [formControlName]="field.name"> 
+                            <span  class="alert alert-danger" *ngIf="player.controls[field.name].hasError('required') && player.controls[field.name].touched">
+                              {{field.label}} is required.
+                            </span>
+                            <span  class="alert alert-danger" *ngIf="errorMsg.get(teamIndex+playerIndex+field.name)">
+                              {{errorMsg.get(teamIndex+playerIndex+field.name)}}
+                            </span>
+                              
                    </div>
                    <div   *ngSwitchCase="'radio'" >
                       <label>{{field.label}}</label> 
@@ -162,5 +183,10 @@
       </div>
     </div>
   </div>
+  <button class="button-primary"  type="submit">Validate</button>
 </form>
+
+<br/>
+
+<br/>
 {{ this.form.value | json }}

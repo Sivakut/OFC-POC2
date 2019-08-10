@@ -26,3 +26,7 @@ label {
 .form-header {
   background-color: white;
 }
+
+.ng-invalid.ng-dirty:not(form), .ng-invalid:not(form).form-submitted {
+  border: solid 2px lightcoral;
+}
